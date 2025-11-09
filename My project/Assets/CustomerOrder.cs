@@ -17,12 +17,19 @@ public class CustomerOrder : MonoBehaviour
     private Meal desiredMeal;
 
     public TextMeshProUGUI textBox;
-
     public Sprite[] mealIcons;
 
-    public void GenerateOrder()
-    {
+    public Meal GetDesiredMeal() {
+        return desiredMeal;
+    }
+
+    public void GenerateOrder() {
         desiredMeal = (Meal)Random.Range(0, System.Enum.GetValues(typeof(Meal)).Length);
-        textBox.text = desiredMeal.ToString();
+
+        if (textBox != null) {
+            textBox.text = desiredMeal.ToString();
+        } else {
+            Debug.LogWarning("TextBox is not assigned in CustomerOrder script.");
+        }
     }
 }
