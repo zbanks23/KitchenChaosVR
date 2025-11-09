@@ -1,35 +1,26 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameState : MonoBehaviour
+public class Game_Manager : MonoBehaviour
 {
     public int points;
     public int timer = 0;
     public bool first = true;
 
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        points++;
-        if (points == 1000)
-        {
-            Transition("BreakScene");
-            points = 0;
-        }
+
     }
 
-    public void Transition(string sceneName)
+    public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
