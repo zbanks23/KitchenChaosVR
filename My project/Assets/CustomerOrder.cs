@@ -20,16 +20,9 @@ public class CustomerOrder : MonoBehaviour
 
     public Sprite[] mealIcons;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void GenerateOrder()
     {
         desiredMeal = (Meal)Random.Range(0, System.Enum.GetValues(typeof(Meal)).Length);
         textBox.text = desiredMeal.ToString();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
