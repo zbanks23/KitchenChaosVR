@@ -6,7 +6,6 @@ public class CustomerAI : MonoBehaviour {
     public GameObject servingZonePrefab;
     public Transform servingZoneLocation;
     public Animator animator;
-
     public float timeToEat = 5.0f;
 
     private CustomerOrder myOrder;
@@ -17,10 +16,9 @@ public class CustomerAI : MonoBehaviour {
     }
 
     void Start() {
-        SpawnMyServingZone();
     }
 
-    void SpawnMyServingZone() {
+    public void SpawnMyServingZone() {
         if (servingZonePrefab == null || servingZoneLocation == null) {
             Debug.LogError("Customer is missing Serving Zone Prefab or Location!");
             return;
@@ -43,15 +41,14 @@ public class CustomerAI : MonoBehaviour {
             animator.SetTrigger("EatFood");
         }
 
-        // Clean up the plate
-        Destroy(foodPlate, 1.0f);
+        Destroy(foodPlate, 0.5f);
 
         StartCoroutine(LeaveAfterEating());
     }
 
     IEnumerator LeaveAfterEating() {
         yield return new WaitForSeconds(timeToEat);
-        Debug.Log(this.name + " has finished eating and is leaving.");
-        Destroy(this.gameObject);
+
+        CustomerSpawner.Instance.MoveCustomer(this.gameObject);
     }
 }

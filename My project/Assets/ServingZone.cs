@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class ServingZone : MonoBehaviour {
     private CustomerAI ownerCustomer;
-
     private CustomerOrder.Meal requiredFood;
 
     public void InitializeZone(CustomerAI owner, CustomerOrder.Meal desiredFood) {
