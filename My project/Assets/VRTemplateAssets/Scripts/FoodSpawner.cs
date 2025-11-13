@@ -48,8 +48,11 @@ public class FoodSpawner : MonoBehaviour {
     public float SpawnDelay;
 
     private List<GameObject> spawnedObjects = new List<GameObject>();
+    private GameObject gameController;
 
     void Start() {
+        gameController = GameObject.FindGameObjectWithTag("GameController");
+
         for (int i = 0; i < NumberSpawnedAtOnce; i++) {
             SpawnNextAtPosition(i);
         }
@@ -77,7 +80,17 @@ public class FoodSpawner : MonoBehaviour {
         GameObject instance = Instantiate(prefab, spawnPos, Quaternion.identity, transform);
 
         UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable interactable = instance.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-        interactable.selectEntered.AddListener(_ => this.OnFoodPickedUp(instance));
+        interactable.selectEntered.AddListener(_ => {
+            CustomerArrow arrowComponent = gameController.GetComponent<CustomerArrow>();
+            arrowComponent.PickedUpObject(instance);
+            this.OnFoodPickedUp(instance);
+        });
+
+        interactable.selectExited.AddListener(_ =>
+        {
+            CustomerArrow arrowComponent = gameController.GetComponent<CustomerArrow>();
+            arrowComponent.DroppedObject(instance);
+        });
 
         spawnedObjects.Add(instance);
     }
