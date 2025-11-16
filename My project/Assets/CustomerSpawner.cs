@@ -12,13 +12,12 @@ public class CustomerSpawner : MonoBehaviour {
             Instance = this;
         }
 
+        isSeatTaken.Clear();
         foreach (Transform seat in transform) {
             isSeatTaken[seat] = false;
         }
 
-        foreach (GameObject customer in customers) {
-            SeatCustomer(customer);
-        }
+        
     }
 
     public GameObject[] customers;
@@ -59,5 +58,8 @@ public class CustomerSpawner : MonoBehaviour {
     }
 
     void Start() {
+        foreach (GameObject customer in customers) {
+            SeatCustomer(customer);
+        }
     }
 }

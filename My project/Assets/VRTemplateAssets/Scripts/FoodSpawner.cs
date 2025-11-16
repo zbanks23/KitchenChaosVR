@@ -52,15 +52,15 @@ public class FoodSpawner : MonoBehaviour {
 
     void Start() {
         gameController = GameObject.FindGameObjectWithTag("GameController");
-
-        for (int i = 0; i < NumberSpawnedAtOnce; i++) {
-            SpawnNextAtPosition(i);
-        }
     }
 
     public void RequestFood(CustomerOrder.Meal mealType) {
         FoodTypesQueue.Enqueue(mealType);
         Debug.Log("Food Spawner: Added " + mealType.ToString() + " to the queue.");
+
+        if (spawnedObjects.Count < NumberSpawnedAtOnce) {
+            SpawnNextAtPosition(spawnedObjects.Count);
+        }
     }
 
     private void SpawnNextAtPosition(int index) {
@@ -80,17 +80,27 @@ public class FoodSpawner : MonoBehaviour {
         GameObject instance = Instantiate(prefab, spawnPos, Quaternion.identity, transform);
 
         UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable interactable = instance.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-        interactable.selectEntered.AddListener(_ => {
-            CustomerArrow arrowComponent = gameController.GetComponent<CustomerArrow>();
-            arrowComponent.PickedUpObject(instance);
-            this.OnFoodPickedUp(instance);
-        });
 
-        interactable.selectExited.AddListener(_ =>
-        {
-            CustomerArrow arrowComponent = gameController.GetComponent<CustomerArrow>();
-            arrowComponent.DroppedObject(instance);
-        });
+        // This check prevents errors if a prefab is missing the component
+        if (interactable != null) {
+            interactable.selectEntered.AddListener(_ => {
+                CustomerArrow arrowComponent = gameController.GetComponent<CustomerArrow>();
+                // Add null checks for safety
+                if (arrowComponent != null) {
+                    arrowComponent.PickedUpObject(instance);
+                }
+                this.OnFoodPickedUp(instance);
+            });
+
+            interactable.selectExited.AddListener(_ => {
+                CustomerArrow arrowComponent = gameController.GetComponent<CustomerArrow>();
+                if (arrowComponent != null) {
+                    arrowComponent.DroppedObject(instance);
+                }
+            });
+        } else {
+            Debug.LogWarning($"Spawned object {prefab.name} is missing an XRGrabInteractable component!");
+        }
 
         spawnedObjects.Add(instance);
     }
@@ -106,21 +116,35 @@ public class FoodSpawner : MonoBehaviour {
 
         for (int i = 0; i < spawnedObjects.Count; i++) {
             Vector3 targetPos = transform.position + transform.forward * (i * Offset);
-            StartCoroutine(MoveToPosition(spawnedObjects[i].transform, targetPos, 0.25f));
+            // Check if object was destroyed while waiting (e.g., delivered)
+            if (spawnedObjects[i] != null) {
+                StartCoroutine(MoveToPosition(spawnedObjects[i].transform, targetPos, 0.25f));
+            }
         }
 
         yield return new WaitForSeconds(SpawnDelay);
-        SpawnNextAtPosition(spawnedObjects.Count);
+        // Check if there's anything in the queue before spawning
+        if (FoodTypesQueue.Count > 0) {
+            SpawnNextAtPosition(spawnedObjects.Count);
+        }
     }
 
     private IEnumerator MoveToPosition(Transform obj, Vector3 target, float duration) {
+        // Check if object is still valid
+        if (obj == null) yield break;
+
         Vector3 start = obj.position;
         float t = 0;
         while (t < duration) {
             t += Time.deltaTime;
+            // Check again in loop
+            if (obj == null) yield break;
             obj.position = Vector3.Lerp(start, target, t / duration);
             yield return null;
         }
-        obj.position = target;
+        // Final check
+        if (obj != null) {
+            obj.position = target;
+        }
     }
 }

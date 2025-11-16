@@ -6,7 +6,7 @@ public class CustomerAI : MonoBehaviour {
     public GameObject servingZonePrefab;
     public Transform servingZoneLocation;
     public Animator animator;
-    public float timeToEat = 5.0f;
+    public float timeToEat = 3.0f;
 
     private CustomerOrder myOrder;
     private ServingZone myServingZone;

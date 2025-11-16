@@ -2,37 +2,49 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class Game_Manager : MonoBehaviour
-{
+public class Game_Manager : MonoBehaviour {
+    // --- FIX 1: Add Singleton pattern ---
+    public static Game_Manager Instance { get; private set; }
+
     public int points;
     public int timer = 0;
     public bool first = true;
     public TextMeshProUGUI pointDisplay;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        addPoints(0);
+    // --- FIX 1 (continued): Add Awake method for Singleton ---
+    void Awake() {
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+        } else {
+            Instance = this;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(points>500)
-        {
+    void Start() {
+        // Use the function to set points, not add them
+        SetPoints(0);
+    }
+
+    void Update() {
+        if (points > 500) {
             LoadScene("BreakScene");
         }
     }
 
-    public void LoadScene(string sceneName)
-    {
+    public void LoadScene(string sceneName) {
         SceneManager.LoadScene(sceneName);
     }
 
-    public void addPoints(int points)
-    {
-        this.points = points;
-        pointDisplay.text = "Points: " + points;
+    // --- FIX 2: Correct the logic ---
+    // Renamed for clarity, but you can keep "addPoints"
+    public void AddPoints(int pointsToAdd) {
+        this.points += pointsToAdd; // Use += to add, not =
+        pointDisplay.text = "Points: " + this.points; // Update with the new total
+    }
+
+    // A helper function to set points at the start
+    public void SetPoints(int total) {
+        this.points = total;
+        pointDisplay.text = "Points: " + this.points;
     }
 }

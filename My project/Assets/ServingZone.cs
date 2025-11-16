@@ -11,6 +11,8 @@ public class ServingZone : MonoBehaviour
     public AudioResource incorrectOrderSoundEffect;
     public AudioSource audioSource;
 
+    public int pointsPerDelivery = 1;
+
     public void InitializeZone(CustomerAI owner, CustomerOrder.Meal desiredFood)
     {
         ownerCustomer = owner;
@@ -24,6 +26,10 @@ public class ServingZone : MonoBehaviour
         audioSource.Play();
 
         Debug.Log("Correct food delivered!");
+
+        if (Game_Manager.Instance != null) {
+            Game_Manager.Instance.AddPoints(pointsPerDelivery);
+        }
 
         customer.ReceiveFood(item.gameObject);
 
