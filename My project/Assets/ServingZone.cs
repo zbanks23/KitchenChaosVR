@@ -10,6 +10,12 @@ public class ServingZone : MonoBehaviour
     public AudioResource correctOrderSoundEffect;
     public AudioResource incorrectOrderSoundEffect;
     public AudioSource audioSource;
+    public Game_Manager gameManager;
+    
+    void Awake()
+    {
+        gameManager = FindObjectOfType<Game_Manager>();
+    }
 
     public int pointsPerDelivery = 1;
 
@@ -50,11 +56,12 @@ public class ServingZone : MonoBehaviour
         if (item.GetFoodType() == requiredFood)
         {
             StartCoroutine(PlaySoundAndDestroy(item, ownerCustomer));
+            gameManager.AddPoints(pointsPerDelivery);
         }
         else
         {
             Debug.Log("Wrong food! Wanted " + requiredFood.ToString() + ", got " + item.GetFoodType().ToString());
-
+            gameManager.AddPoints(-pointsPerDelivery);
             audioSource.resource = incorrectOrderSoundEffect;
             audioSource.Play();
         }
