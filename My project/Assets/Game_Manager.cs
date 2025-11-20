@@ -10,6 +10,7 @@ public class Game_Manager : MonoBehaviour {
     public int timer = 0;
     public bool first = true;
     public TextMeshProUGUI pointDisplay;
+    public int pointReq = 20;
 
     // --- FIX 1 (continued): Add Awake method for Singleton ---
     void Awake() {
@@ -26,7 +27,7 @@ public class Game_Manager : MonoBehaviour {
     }
 
     void Update() {
-        if (points > 500) {
+        if (points > pointReq) {
             LoadScene("BreakScene");
         }
     }
