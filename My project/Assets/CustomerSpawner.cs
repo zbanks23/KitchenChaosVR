@@ -17,7 +17,11 @@ public class CustomerSpawner : MonoBehaviour {
             isSeatTaken[seat] = false;
         }
 
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
     }
 
     public GameObject[] customers;
