@@ -36,7 +36,6 @@ public class Game_Manager : MonoBehaviour {
         SceneManager.LoadScene(sceneName);
     }
 
-    // --- FIX 2: Correct the logic ---
     // Renamed for clarity, but you can keep "addPoints"
     public void AddPoints(int pointsToAdd) {
         this.points += pointsToAdd; // Use += to add, not =
